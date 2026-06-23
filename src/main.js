@@ -564,18 +564,13 @@ window.previewReport = function() {
 
       <div class="print-signatures" style="margin-top:40px;">
         <div class="print-signature-block">
-          <div style="margin-bottom:8px;">Mengetahui,</div>
-          <div style="font-style:italic;margin-bottom:4px;">Inspektur</div>
-          <div class="print-signature-line"></div>
-          <div class="print-name">______________________</div>
-          <div style="font-size:10pt;">NIP. __________________</div>
         </div>
         <div class="print-signature-block">
           <div style="margin-bottom:8px;">${settings.instansi_kota || '___'}, ${today}</div>
-          <div style="font-style:italic;margin-bottom:4px;">${settings.jabatan_ppupd || 'PPUPD'}</div>
+          <div style="font-style:italic;margin-bottom:4px;">Plt. Inspektur</div>
           <div class="print-signature-line"></div>
-          <div class="print-name">${settings.nama_ppupd || '______________________'}</div>
-          <div style="font-size:10pt;">NIP. ${settings.nip_ppupd || '__________________'}</div>
+          <div class="print-name">______________________</div>
+          <div style="font-size:10pt;">NIP. __________________</div>
         </div>
       </div>
     </div>`;

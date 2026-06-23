@@ -56,45 +56,45 @@ export const TEMPLATES = {
     sections: [
       {
         id: 'pembuka',
-        label: 'A. PEMBUKAAN & TUJUAN',
+        label: 'PEMBUKAAN & TUJUAN',
         placeholder: 'Yth... Menindaklanjuti...',
         default_content: 'Yth, Gubernur / Bupati / Walikota\nDi-\nTempat\n\nMenindaklanjuti surat Kepala {nama_opd} Nomor: ... tanggal ... perihal Permintaan Reviu terhadap usulan Surat Keputusan tentang {perihal}. Adapun hasil reviu kami sampaikan sebagai berikut:'
       },
       {
         id: 'tujuan_sk',
-        label: 'B. TUJUAN SK (Poin 1)',
-        default_content: '1. Usulan penetapan Surat Keputusan tentang {perihal} sebagaimana dimaksud bertujuan untuk memberikan edukasi, penyampaian materi, menjawab pertanyaan, serta memandu jalannya acara.'
+        label: 'TUJUAN SK',
+        default_content: 'Usulan penetapan Surat Keputusan tentang {perihal} sebagaimana dimaksud bertujuan untuk memberikan edukasi, penyampaian materi, menjawab pertanyaan, serta memandu jalannya acara.'
       },
       {
         id: 'dasar_hukum',
-        label: 'C. DASAR HUKUM (Poin 2 & 3)',
+        label: 'DASAR HUKUM',
         default_content: '' 
       },
       {
         id: 'hasil_reviu',
-        label: 'D. HASIL REVIU & ANALISIS (Poin 4)',
+        label: 'HASIL REVIU & ANALISIS',
         default_content: 'Hasil reviu atas Usulan Surat Keputusan tentang {perihal} adalah sebagai berikut:\n\n[TABEL/DAFTAR NARASUMBER]\n1. Nama: ... | Jabatan: ... | Honorarium: ... | Ket: Sesuai\n2. Nama: ... | Jabatan: ... | Honorarium: ... | Ket: Sesuai\n\nBerdasarkan Standar Harga Satuan yang berlaku, honorarium narasumber tersebut telah sesuai dengan peraturan.\n\n[TABEL/DAFTAR PEMBAWA ACARA]\n1. Nama: ... | Jabatan: ... | Honorarium: ... | Ket: Sesuai\n\nBerdasarkan Standar Harga Satuan, honorarium Pembawa Acara tersebut tidak melebihi standar yang ditetapkan.',
         ai_assisted: true
       },
       {
         id: 'catatan_perbaikan',
-        label: 'E. CATATAN PERBAIKAN (Poin 5)',
+        label: 'CATATAN PERBAIKAN',
         default_content: 'Terdapat kesalahan pengetikan pada draft SK, yaitu tertulis kata "..." yang seharusnya ditulis "...". Dimohon kepada Satuan Kerja pemohon agar melakukan perbaikan redaksional sebelum dokumen ditetapkan lebih lanjut.'
       },
       {
         id: 'tanggung_jawab',
-        label: 'F. PERNYATAAN TANGGUNG JAWAB (Poin 6)',
+        label: 'PERNYATAAN TANGGUNG JAWAB',
         default_content: 'Kebenaran dokumen dan data/informasi pendukung lainnya yang diserahkan sebagai bahan reviu, secara formil dan materil sepenuhnya menjadi tanggung jawab {nama_opd}.'
       },
       {
         id: 'kesimpulan_penutup',
-        label: 'G. KESIMPULAN & PENUTUP',
+        label: 'KESIMPULAN & PENUTUP',
         default_content: 'Berdasarkan uraian tersebut di atas, bahwa Usulan Surat Keputusan tentang {perihal} sudah sesuai dengan ketentuan yang berlaku dengan memperhatikan catatan perbaikan redaksional.\n\nDemikian kami sampaikan, atas perkenan pimpinan kami ucapkan terima kasih.',
         ai_assisted: true
       },
       {
         id: 'tembusan',
-        label: 'H. TEMBUSAN',
+        label: 'TEMBUSAN',
         default_content: 'Tembusan :\n1. Pj. Sekretaris Daerah;\n2. Kepala {nama_opd}.'
       }
     ]

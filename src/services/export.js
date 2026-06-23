@@ -93,21 +93,21 @@ export async function exportToWord(review, opd, settings, selectedRegulations) {
     new Paragraph({
       alignment: AlignmentType.RIGHT,
       children: [
-        new TextRun({ text: settings.jabatan_ppupd || 'PPUPD', size: 24, italics: true })
+        new TextRun({ text: 'Plt. Inspektur', size: 24, italics: true })
       ],
       spacing: { after: 800 } // Ruang untuk tanda tangan
     }),
     new Paragraph({
       alignment: AlignmentType.RIGHT,
       children: [
-        new TextRun({ text: settings.nama_ppupd || '______________________', size: 24, bold: true })
+        new TextRun({ text: '______________________', size: 24, bold: true })
       ],
       spacing: { after: 100 }
     }),
     new Paragraph({
       alignment: AlignmentType.RIGHT,
       children: [
-        new TextRun({ text: `NIP. ${settings.nip_ppupd || '__________________'}`, size: 24 })
+        new TextRun({ text: `NIP. __________________`, size: 24 })
       ]
     })
   );
