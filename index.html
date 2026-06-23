@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>REVIUPP — Sistem Manajemen Reviu PPUPD</title>
+    <meta name="description" content="Aplikasi manajemen reviu berbasis AI untuk PPUPD. Tersedia template laporan baku, referensi peraturan otomatis, dan asisten AI penyusunan narasi." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- SIDEBAR -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <a class="sidebar-logo" href="#" onclick="return false;">
+            <div class="sidebar-logo-icon">🔍</div>
+            <div class="sidebar-logo-text">
+              <div class="app-name">REVIUPP</div>
+              <div class="app-sub">Sistem Reviu PPUPD</div>
+            </div>
+          </a>
+        </div>
+
+        <nav class="sidebar-nav">
+          <div class="nav-section-label">Menu Utama</div>
+          <div class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')">
+            <span class="nav-icon">🏠</span>
+            <span>Dashboard</span>
+          </div>
+          <div class="nav-item" data-page="new-review" onclick="navigateTo('new-review')">
+            <span class="nav-icon">✏️</span>
+            <span>Buat Reviu Baru</span>
+          </div>
+
+          <div class="nav-section-label" style="margin-top:12px">Manajemen</div>
+          <div class="nav-item" data-page="arsip" onclick="navigateTo('arsip')">
+            <span class="nav-icon">📁</span>
+            <span>Arsip Reviu</span>
+            <span class="nav-badge" id="nav-badge-arsip">0</span>
+          </div>
+          <div class="nav-item" data-page="opd" onclick="navigateTo('opd')">
+            <span class="nav-icon">🏛️</span>
+            <span>Data OPD</span>
+          </div>
+          <div class="nav-item" data-page="peraturan" onclick="navigateTo('peraturan')">
+            <span class="nav-icon">📚</span>
+            <span>Database Peraturan</span>
+          </div>
+
+          <div class="nav-section-label" style="margin-top:12px">Sistem</div>
+          <div class="nav-item" data-page="settings" onclick="navigateTo('settings')">
+            <span class="nav-icon">⚙️</span>
+            <span>Pengaturan</span>
+          </div>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div style="font-size:11px;color:var(--text-muted);line-height:1.5;">
+            <div style="font-weight:600;color:var(--text-secondary);" id="sidebar-user-name">—</div>
+            <div id="sidebar-instansi">Inspektorat</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <div class="main-content">
+        <!-- TOP BAR -->
+        <header class="topbar">
+          <h1 class="topbar-title" id="topbar-title">Dashboard</h1>
+          <div class="topbar-actions">
+            <div id="topbar-date" style="font-size:13px;color:var(--text-secondary);"></div>
+            <button class="btn btn-primary" onclick="navigateTo('new-review')">
+              <span>+</span> Reviu Baru
+            </button>
+          </div>
+        </header>
+
+        <!-- PAGES -->
+        <div style="flex:1;">
+
+          <!-- ===== DASHBOARD ===== -->
+          <div class="page active" id="page-dashboard">
+            <div class="page-header">
+              <h1>Selamat Datang, <span id="welcome-name">PPUPD</span> 👋</h1>
+              <p>Ringkasan aktivitas reviu Anda.</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid" id="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon blue">📋</div>
+                <div class="stat-content">
+                  <div class="stat-value" id="stat-total">0</div>
+                  <div class="stat-label">Total Reviu</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon orange">🔄</div>
+                <div class="stat-content">
+                  <div class="stat-value" id="stat-draft">0</div>
+                  <div class="stat-label">Draft</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon green">✅</div>
+                <div class="stat-content">
+                  <div class="stat-value" id="stat-selesai">0</div>
+                  <div class="stat-label">Selesai</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon purple">📅</div>
+                <div class="stat-content">
+                  <div class="stat-value" id="stat-bulan-ini">0</div>
+                  <div class="stat-label">Bulan Ini</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Reviews -->
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">Reviu Terbaru</h2>
+                <button class="btn btn-secondary btn-sm" onclick="navigateTo('arsip')">Lihat Semua →</button>
+              </div>
+              <div id="recent-reviews-list">
+                <div class="empty-state">
+                  <div class="empty-icon">📭</div>
+                  <h3>Belum ada reviu</h3>
+                  <p>Mulai buat reviu pertama Anda</p>
+                  <button class="btn btn-primary mt-4" onclick="navigateTo('new-review')">+ Buat Reviu Baru</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== NEW REVIEW ===== -->
+          <div class="page" id="page-new-review">
+            <div class="page-header">
+              <h1>Buat Reviu Baru</h1>
+              <p>Isi informasi dasar untuk memulai laporan reviu.</p>
+            </div>
+
+            <div style="max-width: 760px;">
+              <!-- Step indicator -->
+              <div class="progress-steps">
+                <div class="step active" id="step-1">
+                  <div class="step-num">1</div>
+                  <div class="step-label">Info Dasar</div>
+                </div>
+                <div class="step-line" id="line-1"></div>
+                <div class="step active" id="step-2">
+                  <div class="step-num">2</div>
+                  <div class="step-label">Susun Laporan</div>
+                </div>
+              </div>
+
+              <div class="card">
+                <form id="form-new-review">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Nomor Surat Masuk <span class="required">*</span></label>
+                      <input type="text" class="form-control" id="nr-nomor-surat" placeholder="Contoh: 800/123/OPD/2024" required>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Tanggal Surat Masuk <span class="required">*</span></label>
+                      <input type="date" class="form-control" id="nr-tanggal-masuk" required>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">OPD Pemohon <span class="required">*</span></label>
+                    <select class="form-control" id="nr-opd-id" required>
+                      <option value="">-- Pilih OPD --</option>
+                    </select>
+                    <div class="form-hint">
+                      OPD belum terdaftar? <a href="#" onclick="navigateTo('opd'); return false;" style="color:var(--text-accent);">Tambah OPD baru</a>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Jenis Reviu <span class="required">*</span></label>
+                    <select class="form-control" id="nr-jenis-reviu" required>
+                      <option value="">-- Pilih Jenis Reviu --</option>
+                      <option value="sk">📋 Reviu Surat Keputusan (SK Umum)</option>
+                      <option value="sk_narasumber">📝 Reviu SK Narasumber/Kepanitiaan</option>
+                      <option value="kegiatan">📊 Reviu Kegiatan</option>
+                      <option value="surat_perjanjian">📄 Reviu Surat Perjanjian</option>
+                      <option value="rka">💰 Reviu RKA/RKPA</option>
+                      <option value="laporan_keuangan">📑 Reviu Laporan Keuangan</option>
+                      <option value="lainnya">📌 Reviu Lainnya</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Perihal / Judul Reviu <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="nr-perihal"
+                      placeholder="Contoh: SK Pengangkatan Pejabat Struktural Eselon IV..."
+                      oninput="handlePerihalInput(this.value)"
+                      required>
+                    <div class="form-hint">Ketik perihal untuk mendapatkan saran peraturan terkait secara otomatis</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Nomor SK/Dokumen yang Direviu</label>
+                    <input type="text" class="form-control" id="nr-nomor-dokumen" placeholder="Contoh: 821.22/01/2024">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Catatan Tambahan</label>
+                    <textarea class="form-control" id="nr-catatan" rows="3" placeholder="Catatan atau konteks tambahan..."></textarea>
+                  </div>
+
+                  <!-- Auto Regulations -->
+                  <div id="auto-regulations-box" style="display:none; margin-bottom:20px;">
+                    <div style="font-size:13px;font-weight:700;color:var(--text-secondary);margin-bottom:10px;">
+                      ✨ Peraturan yang Relevan (pilih yang akan digunakan):
+                    </div>
+                    <div id="auto-regulations-list" class="regulation-list"></div>
+                    <div style="margin-top:10px;font-size:12px;color:var(--text-muted);">
+                      Anda dapat menambah peraturan manual di halaman editor.
+                    </div>
+                  </div>
+
+                  <div style="display:flex;gap:12px;justify-content:flex-end;padding-top:8px;">
+                    <button type="button" class="btn btn-secondary" onclick="navigateTo('dashboard')">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-lg">Lanjut ke Editor Laporan →</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== EDITOR REVIU ===== -->
+          <div class="page" id="page-editor">
+            <div class="page-header">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h1 id="editor-title">Editor Laporan Reviu</h1>
+                  <p id="editor-subtitle">Draft sedang diedit</p>
+                </div>
+                <div class="flex gap-2">
+                  <button class="btn btn-secondary" onclick="navigateTo('arsip')">← Arsip</button>
+                  <button class="btn btn-secondary" onclick="previewReport()">👁 Pratinjau</button>
+                  <button class="btn btn-success" onclick="saveAndFinish()">✅ Tandai Selesai</button>
+                  <button class="btn btn-primary" onclick="saveReport()">💾 Simpan</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="editor-layout">
+              <!-- Left: Report Sections -->
+              <div id="editor-sections">
+                <!-- Rendered by JS -->
+              </div>
+
+              <!-- Right: Panel -->
+              <div class="editor-panel">
+                <!-- Regulations Panel -->
+                <div class="card" style="margin-bottom:16px;">
+                  <div class="card-header">
+                    <h3 class="card-title">📚 Dasar Hukum</h3>
+                    <button class="btn btn-ghost btn-sm" onclick="openRegulationSearch()">+ Tambah</button>
+                  </div>
+                  <div id="selected-regulations" class="regulation-list">
+                    <div style="font-size:13px;color:var(--text-muted);padding:8px 0;">Belum ada peraturan dipilih</div>
+                  </div>
+                </div>
+
+                <!-- AI Panel -->
+                <div class="card" style="background:rgba(37,99,235,0.05);border-color:rgba(37,99,235,0.2);">
+                  <div class="card-header">
+                    <h3 class="card-title" style="color:#60a5fa;">🤖 Asisten AI</h3>
+                  </div>
+                  <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6;">
+                    Generate narasi otomatis menggunakan AI berdasarkan perihal dan peraturan yang dipilih.
+                  </p>
+                  <button class="btn btn-primary" style="width:100%;" onclick="generateFullNarasi()">
+                    ✨ Generate Semua Narasi
+                  </button>
+                  <div style="margin-top:10px;font-size:11px;color:var(--text-muted);text-align:center;">
+                    Hasil AI tetap perlu direview dan disesuaikan.
+                  </div>
+                </div>
+
+                <!-- Review Info -->
+                <div class="card" style="margin-top:16px;">
+                  <div class="card-header">
+                    <h3 class="card-title">ℹ️ Info Reviu</h3>
+                  </div>
+                  <div id="editor-info" style="font-size:13px;line-height:1.8;color:var(--text-secondary);"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== ARSIP ===== -->
+          <div class="page" id="page-arsip">
+            <div class="page-header">
+              <h1>Arsip Reviu</h1>
+              <p>Semua laporan reviu yang pernah dibuat.</p>
+            </div>
+
+            <div class="card">
+              <!-- Filters -->
+              <div class="flex gap-3 mb-4" style="flex-wrap:wrap;">
+                <div class="search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" placeholder="Cari perihal, OPD..." id="arsip-search" oninput="filterArsip()">
+                </div>
+                <select class="form-control" id="arsip-filter-jenis" style="width:200px;" onchange="filterArsip()">
+                  <option value="semua">Semua Jenis</option>
+                  <option value="sk">Reviu SK Umum</option>
+                  <option value="sk_narasumber">Reviu SK Narasumber</option>
+                  <option value="kegiatan">Reviu Kegiatan</option>
+                  <option value="surat_perjanjian">Reviu Surat Perjanjian</option>
+                  <option value="rka">Reviu RKA</option>
+                  <option value="laporan_keuangan">Reviu Laporan Keuangan</option>
+                  <option value="lainnya">Lainnya</option>
+                </select>
+                <select class="form-control" id="arsip-filter-status" style="width:160px;" onchange="filterArsip()">
+                  <option value="semua">Semua Status</option>
+                  <option value="draft">Draft</option>
+                  <option value="selesai">Selesai</option>
+                </select>
+              </div>
+
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>No. Surat Masuk</th>
+                      <th>Perihal</th>
+                      <th>OPD</th>
+                      <th>Jenis</th>
+                      <th>Status</th>
+                      <th>Tanggal</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="arsip-table-body">
+                    <tr>
+                      <td colspan="7">
+                        <div class="empty-state">
+                          <div class="empty-icon">📭</div>
+                          <h3>Belum ada arsip</h3>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== OPD ===== -->
+          <div class="page" id="page-opd">
+            <div class="page-header">
+              <div class="flex justify-between items-center">
+                <div>
+                  <h1>Data OPD</h1>
+                  <p>Kelola daftar OPD pemohon reviu.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openOpdModal()">+ Tambah OPD</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="flex gap-3 mb-4">
+                <div class="search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" placeholder="Cari nama OPD..." id="opd-search" oninput="filterOpd()">
+                </div>
+              </div>
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Nama OPD</th>
+                      <th>Singkatan</th>
+                      <th>Kepala OPD</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="opd-table-body">
+                    <tr><td colspan="5"><div class="empty-state"><div class="empty-icon">🏛️</div><h3>Belum ada OPD</h3><p>Tambahkan OPD pemohon reviu</p></div></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== PERATURAN ===== -->
+          <div class="page" id="page-peraturan">
+            <div class="page-header">
+              <h1>Database Peraturan</h1>
+              <p>Daftar peraturan perundang-undangan yang tersedia dalam sistem.</p>
+            </div>
+
+            <div class="card">
+              <div class="flex gap-3 mb-4">
+                <div class="search-box" style="max-width:400px;">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" placeholder="Cari peraturan..." id="reg-search" oninput="filterRegulations()">
+                </div>
+                <select class="form-control" id="reg-filter-kategori" style="width:220px;" onchange="filterRegulations()">
+                  <option value="">Semua Kategori</option>
+                </select>
+              </div>
+              <div id="regulations-full-list" class="regulation-list"></div>
+            </div>
+          </div>
+
+          <!-- ===== SETTINGS ===== -->
+          <div class="page" id="page-settings">
+            <div class="page-header">
+              <h1>Pengaturan</h1>
+              <p>Konfigurasi identitas instansi dan integrasi AI.</p>
+            </div>
+
+            <div style="max-width:640px;display:flex;flex-direction:column;gap:20px;">
+              <div class="card">
+                <div class="card-header"><h2 class="card-title">🏛️ Identitas Instansi</h2></div>
+                <form id="form-settings">
+                  <div class="form-group">
+                    <label class="form-label">Nama Instansi / Inspektorat</label>
+                    <input type="text" class="form-control" id="s-instansi-nama" placeholder="Contoh: Inspektorat Kabupaten Contoh">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Kota / Kabupaten</label>
+                    <input type="text" class="form-control" id="s-instansi-kota" placeholder="Contoh: Kabupaten Contoh">
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Nama PPUPD</label>
+                      <input type="text" class="form-control" id="s-nama-ppupd" placeholder="Nama lengkap Anda">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">NIP</label>
+                      <input type="text" class="form-control" id="s-nip-ppupd" placeholder="NIP Anda">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Jabatan</label>
+                    <input type="text" class="form-control" id="s-jabatan-ppupd" placeholder="Contoh: Pengawas Pemerintahan Muda">
+                  </div>
+
+                  <div class="section-divider"></div>
+
+                  <div class="card-header"><h2 class="card-title">🤖 Konfigurasi AI</h2></div>
+                  <div class="form-group">
+                    <label class="form-label">Google Gemini API Key</label>
+                    <input type="password" class="form-control" id="s-ai-api-key" placeholder="AIza...">
+                    <div class="form-hint">
+                      Dapatkan API Key gratis di
+                      <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--text-accent);">Google AI Studio</a>.
+                      API Key disimpan hanya di browser Anda (localStorage).
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Model AI</label>
+                    <select class="form-control" id="s-ai-model">
+                      <option value="gemini-2.0-flash">Gemini 2.0 Flash (Cepat, Rekomendasi)</option>
+                      <option value="gemini-1.5-pro">Gemini 1.5 Pro (Lebih Akurat)</option>
+                      <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                    </select>
+                  </div>
+
+                  <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:8px;">
+                    <button type="submit" class="btn btn-primary">💾 Simpan Pengaturan</button>
+                  </div>
+                </form>
+              </div>
+
+              <div class="card" style="border-color:rgba(239,68,68,0.2);">
+                <div class="card-header"><h2 class="card-title" style="color:#f87171;">⚠️ Data & Reset</h2></div>
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Hapus semua data aplikasi dari browser ini. Tindakan ini tidak dapat dibatalkan.</p>
+                <button class="btn btn-danger" onclick="confirmReset()">🗑️ Reset Semua Data</button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- end pages -->
+      </div><!-- end main-content -->
+    </div><!-- end #app -->
+
+    <!-- ===== MODALS ===== -->
+
+    <!-- Modal OPD -->
+    <div class="modal-overlay" id="modal-opd">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modal-opd-title">Tambah OPD Baru</h2>
+          <button class="modal-close" onclick="closeModal('modal-opd')">✕</button>
+        </div>
+        <form id="form-opd">
+          <input type="hidden" id="opd-edit-id">
+          <div class="form-group">
+            <label class="form-label">Nama OPD <span class="required">*</span></label>
+            <input type="text" class="form-control" id="opd-nama" placeholder="Contoh: Dinas Pendidikan dan Kebudayaan" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Singkatan</label>
+              <input type="text" class="form-control" id="opd-singkatan" placeholder="Contoh: DIKBUD">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Kode OPD</label>
+              <input type="text" class="form-control" id="opd-kode" placeholder="Contoh: 2.01">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nama Kepala OPD</label>
+            <input type="text" class="form-control" id="opd-kepala" placeholder="Nama lengkap dan gelar">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">NIP Kepala OPD</label>
+              <input type="text" class="form-control" id="opd-nip-kepala">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Jabatan Kepala</label>
+              <input type="text" class="form-control" id="opd-jabatan-kepala" placeholder="Kepala Dinas ...">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Alamat Kantor</label>
+            <textarea class="form-control" id="opd-alamat" rows="2" placeholder="Alamat lengkap kantor OPD"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('modal-opd')">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan OPD</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Regulation Search -->
+    <div class="modal-overlay" id="modal-regulations">
+      <div class="modal modal-lg">
+        <div class="modal-header">
+          <h2 class="modal-title">📚 Pilih Peraturan</h2>
+          <button class="modal-close" onclick="closeModal('modal-regulations')">✕</button>
+        </div>
+        <div class="search-box" style="max-width:100%;margin-bottom:16px;">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Cari peraturan berdasarkan kata kunci..." id="reg-modal-search"
+            oninput="searchRegulationsModal(this.value)" style="width:100%;">
+        </div>
+        <div id="reg-modal-list" class="regulation-list" style="max-height:400px;overflow-y:auto;"></div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal('modal-regulations')">Tutup</button>
+          <button class="btn btn-primary" onclick="applySelectedRegulations()">Terapkan Pilihan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Preview -->
+    <div class="modal-overlay" id="modal-preview">
+      <div class="modal modal-lg" style="max-width:900px;">
+        <div class="modal-header">
+          <h2 class="modal-title">👁 Pratinjau Laporan</h2>
+          <div class="flex gap-2">
+            <button class="btn btn-primary btn-sm" onclick="downloadWord()">📄 Unduh Word</button>
+            <button class="btn btn-secondary btn-sm" onclick="printReport()">🖨️ Print</button>
+            <button class="modal-close" onclick="closeModal('modal-preview')">✕</button>
+          </div>
+        </div>
+        <div id="preview-content"></div>
+      </div>
+    </div>
+
+    <!-- Modal Confirm -->
+    <div class="modal-overlay" id="modal-confirm">
+      <div class="modal" style="max-width:400px;">
+        <div class="modal-header">
+          <h2 class="modal-title" id="confirm-title">Konfirmasi</h2>
+          <button class="modal-close" onclick="closeModal('modal-confirm')">✕</button>
+        </div>
+        <p id="confirm-message" style="color:var(--text-secondary);font-size:14px;"></p>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal('modal-confirm')">Batal</button>
+          <button class="btn btn-danger" id="confirm-btn">Ya, Lanjutkan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
