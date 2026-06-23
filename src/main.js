@@ -276,14 +276,17 @@ function renderEditor() {
     <div class="section-editor" id="sec-${section.id}">
       <div class="section-header">
         <span class="section-title">${section.label}</span>
-        <div style="display:flex;gap:6px;">
-          ${section.ai_assisted ? `<button class="btn btn-ghost btn-sm" style="font-size:11px;color:#60a5fa;" onclick="generateSectionNarasi('${section.id}', '${section.label}')">✨ AI Assist</button>` : ''}
-        </div>
       </div>
       <div class="section-body">
         ${section.id === 'dasar_hukum' ? renderDasarHukumSection() : `
           <div id="ai-status-${section.id}"></div>
           <textarea id="content-${section.id}" placeholder="${section.placeholder || ''}">${currentReview.konten_laporan?.[section.id] || ''}</textarea>
+          ${section.ai_assisted ? `
+          <div style="margin-top:8px; display:flex; gap:8px;">
+            <input type="text" id="ai-instruction-${section.id}" class="form-control" placeholder="Instruksi AI (Opsional)... misal: Buat lebih singkat" style="flex:1; font-size:12px; padding:4px 8px;">
+            <button class="btn btn-secondary btn-sm" onclick="generateSectionNarasi('${section.id}', '${section.label}')">✨ Generate AI</button>
+          </div>
+          ` : ''}
         `}
       </div>
     </div>`).join('');
@@ -393,6 +396,7 @@ window.generateSectionNarasi = async function(sectionId, sectionLabel) {
   try {
     const opd = opdStore.getById(currentReview.opd_id);
     const jenisLabel = JENIS_REVIU.find(j => j.value === currentReview.jenis_reviu)?.label || currentReview.jenis_reviu;
+    const customInstruction = document.getElementById(`ai-instruction-${sectionId}`)?.value || '';
 
     const result = await generateNarasi({
       jenisReviu: jenisLabel,
@@ -403,6 +407,7 @@ window.generateSectionNarasi = async function(sectionId, sectionLabel) {
       dasarHukum: editorSelectedRegulations,
       existingContent: textarea?.value || '',
       settings,
+      customInstruction,
     });
 
     if (textarea) textarea.value = result;

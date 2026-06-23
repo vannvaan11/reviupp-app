@@ -41,7 +41,7 @@ async function callGemini(prompt) {
 /**
  * Generate narasi untuk bagian tertentu dari laporan reviu
  */
-export async function generateNarasi({ jenisReviu, perihal, namaOpd, sectionId, sectionLabel, dasarHukum, existingContent, settings }) {
+export async function generateNarasi({ jenisReviu, perihal, namaOpd, sectionId, sectionLabel, dasarHukum, existingContent, settings, customInstruction }) {
   const dasarHukumText = dasarHukum && dasarHukum.length > 0
     ? dasarHukum.map(d => `- ${d.kode}: ${d.judul}`).join('\n')
     : '(belum dipilih)';
@@ -69,6 +69,7 @@ Narasi harus mencakup:
 4. Gunakan bahasa Indonesia formal dan baku
 5. Format dengan penomoran/abjad yang rapi
 
+${customInstruction ? `Instruksi Khusus dari Pengguna:\n${customInstruction}\n` : ''}
 Tulis hanya isi narasinya saja, tanpa judul bagian.`;
 
   } else if (sectionId === 'simpulan') {
@@ -87,6 +88,7 @@ Simpulan harus:
 4. Menggunakan bahasa Indonesia formal dan baku
 5. Padat dan tidak terlalu panjang (2-4 paragraf)
 
+${customInstruction ? `Instruksi Khusus dari Pengguna:\n${customInstruction}\n` : ''}
 Tulis hanya isi simpulannya saja, tanpa judul bagian.`;
 
   } else {
@@ -103,6 +105,7 @@ ${existingContent ? `Konten yang sudah ada (untuk diperbaiki/dilengkapi):\n${exi
 
 Tugas Anda: Susunlah narasi untuk bagian "${sectionLabel}" dari Laporan Hasil Reviu dengan bahasa Indonesia yang formal, profesional, dan sesuai standar penulisan laporan inspektorat daerah.
 
+${customInstruction ? `Instruksi Khusus dari Pengguna:\n${customInstruction}\n` : ''}
 Tulis hanya isi narasinya saja, tanpa judul bagian.`;
   }
 
